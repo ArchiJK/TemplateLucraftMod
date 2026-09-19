@@ -8,6 +8,7 @@ import ua.archijk.templatelcmod.crawl.util.CrawlCapabilityUtil;
 import ua.archijk.templatelcmod.crawl.util.CrawlConstants;
 import ua.archijk.templatelcmod.crawl.util.CrawlMathUtil;
 import ua.archijk.templatelcmod.crawl.util.CrawlOrientationUtil;
+import net.minecraft.util.EnumFacing;
 
 public class CrawlCameraHandler {
 
@@ -19,6 +20,17 @@ public class CrawlCameraHandler {
 
         ICrawlData data = CrawlCapabilityUtil.get(Minecraft.getMinecraft().player);
         if (data == null || !data.isCrawling()) {
+            event.setRoll(0.0F);
+            return;
+        }
+
+        if (data.getTransitionTicks() > 0) {
+            event.setRoll(0.0F);
+            return;
+        }
+
+        if (data.getSurface() == EnumFacing.DOWN) {
+            event.setRoll(0.0F);
             return;
         }
 
