@@ -101,9 +101,9 @@ public final class CrawlMovementController {
         }
         player.setNoGravity(true);
         double adhesion = 0.08D;
-        player.motionX += adhesion * surface.getFrontOffsetX();
-        player.motionY += adhesion * surface.getFrontOffsetY();
-        player.motionZ += adhesion * surface.getFrontOffsetZ();
+        player.motionX += adhesion * surface.getXOffset();
+        player.motionY += adhesion * surface.getYOffset();
+        player.motionZ += adhesion * surface.getZOffset();
     }
 
     private static void applySpeed(EntityPlayerMP player) {

@@ -44,9 +44,11 @@ public final class CrawlConfig {
 
         BLOCKED_BLOCKS.clear();
         for (String value : blockedBlocks) {
-            ResourceLocation id = ResourceLocation.tryCreate(value.trim());
-            if (id != null) {
+            try {
+                ResourceLocation id = new ResourceLocation(value.trim());
                 BLOCKED_BLOCKS.add(id);
+            } catch (IllegalArgumentException ignored) {
+                // Ignore invalid config values.
             }
         }
 

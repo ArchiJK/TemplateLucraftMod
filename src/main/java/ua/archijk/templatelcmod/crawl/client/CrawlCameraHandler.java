@@ -22,8 +22,9 @@ public class CrawlCameraHandler {
             return;
         }
 
+        float partialTicks = (float) event.getRenderPartialTicks();
         float blend = data.getTransitionTicks() > 0
-                ? CrawlMathUtil.clamp01((CrawlConstants.TRANSITION_TICKS - data.getTransitionTicks() + event.getRenderPartialTicks()) / (float) CrawlConstants.TRANSITION_TICKS)
+                ? CrawlMathUtil.clamp01((CrawlConstants.TRANSITION_TICKS - data.getTransitionTicks() + partialTicks) / (float) CrawlConstants.TRANSITION_TICKS)
                 : 1.0F;
 
         float fromRoll = CrawlOrientationUtil.getRollForSurface(data.getPreviousSurface());

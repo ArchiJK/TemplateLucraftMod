@@ -56,7 +56,7 @@ public final class SurfaceDetector {
     }
 
     private static boolean hasAttachableSurface(World world, AxisAlignedBB box, EnumFacing side) {
-        AxisAlignedBB probe = box.grow(0.03D).offset(side.getFrontOffsetX() * 0.12D, side.getFrontOffsetY() * 0.12D, side.getFrontOffsetZ() * 0.12D);
+        AxisAlignedBB probe = box.grow(0.03D).offset(side.getXOffset() * 0.12D, side.getYOffset() * 0.12D, side.getZOffset() * 0.12D);
         BlockPos min = new BlockPos(probe.minX, probe.minY, probe.minZ);
         BlockPos max = new BlockPos(probe.maxX, probe.maxY, probe.maxZ);
 
