@@ -1,0 +1,9 @@
+key.categories.templatelucraftmod=Template LC Mod
+key.templatelucraftmod.toggle_crawl=Toggle Crawling
+crawlmod.message.enabled=Crawling enabled
+crawlmod.message.disabled=Crawling disabled
+crawlmod.message.cannot_enable=No valid surface nearby for crawling
+crawlmod.message.cannot_disable=Not enough space to stand up
+crawlmod.config.allowWallCrawl=Allow wall crawling
+crawlmod.config.allowCeilingCrawl=Allow ceiling crawling
+crawlmod.config.blockedBlocks=Blocked crawl surface blocks

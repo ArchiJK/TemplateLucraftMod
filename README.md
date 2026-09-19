@@ -1,37 +1,73 @@
-# Forge Workspace Setup: Standalone 1.12.2
+# Template LC Mod (Minecraft 1.12.2, Forge)
 
-Basic setup for Forge-based mod development workspace. Essentially serves as ennobled version of last official setup provided by Forge itself (can be found [here](https://maven.minecraftforge.net/net/minecraftforge/forge/1.12.2-14.23.5.2855/forge-1.12.2-14.23.5.2855-mdk.zip)). Has a couple features that original setup does not:
+Мод собран на базе существующего шаблона `TemplateLCMod` и сохраняет текущую функциональность (superpower-классы и регистрацию).
 
-## Building Features:
+## Платформа
 
-- Gradle wrapper 4.9 is used by default;
-- Custom ForgeGradle 2.3 fork is used ([this one](https://github.com/juanmuscaria/ForgeGradle/tree/FG_2.3)). Though ForgeGradle 3.+ does partially support 1.12.2 projects already, it does not have `GradleStart` wrapper, which in 1.12.2 and below is relied upon for discovering coremods on the classpath. Without it coremods and tweakers are effectively unable to load in development environment, which is a critical issue for a lot of projects;
-- Brought back `eclipse` folder with its embedded workspace shenanigans and integrated launch configurations;
-- Enforced UTF-8 encoding for all files;
-- Buildscript contains tasks for generating `dev` and `sources` artifacts for your mod, as well as ensures they will be generated alongside main jar when executing `gradlew build`;
-- All data in `mcmod.info` file is filled when actually building a mod. This illustrates both how to inflate text files upon building and how to use `gradle.properties` file for declaring custom properties used by `build.gradle`;
-- Illustration of how to add another mod to project dependencies, in a form of local file.
+- Minecraft `1.12.2`
+- Forge `14.23.5.x`
+- Java `8`
 
-## Ennobled Example Mod:
+## Сборка
 
-- Creates basic logger for itself;
-- Provides an example of registering custom `SimpleNetworkWrapper`, as well as an example packet sent from server to every player upon logging in. Shows a chat message to that player upon being received, just as demonstration that packet have performed its journey successfully;
-- Has one method that interacts with Baubles - `BaublesHelper#hasEquipped`. Just to demonstrate that our example of local modfile dependency, which is Baubles modfile in this case, actually works;
-- Mod version in the code (`ExampleMod.VERSION`) is defined as token string, which is replaced by actual project version when building;
-- Has `CommonProxy`/`ClientProxy` thing, which also serves as an example of `IGuiHandler` implementation;
-- Contains uncomplicated event handler with a couple event receivers;
-- Illustrates how to create a config file using Forge's `Configuration`;
-- Creates custom creative tab.
+```bash
+./gradlew clean build
+```
 
+Если в окружении установлено несколько JDK, используйте Java 8:
 
-## Short Setup Guide:
+```bash
+JAVA_HOME=/usr/lib/jvm/temurin-8-jdk-amd64 ./gradlew clean build
+```
 
-If you ended up here, I assume you are already familiar with how to setup basic Forge workspace, so I won't be covering it all in great detail. Only the most important steps, just in case you forgot something:
+## Установка
 
-1. Ensure you have JDK 8 installed (not just JRE), and `JAVA_HOME` environment variable is set in your system, pointing to that JDK;
-2. Download this repository contents ([like this](https://github.com/Aizistral-Studios/ForgeWorkspaceSetup/archive/refs/heads/1.12.2-standalone.zip), for instance), create folder for your mod-specific workspace and unpack those contents into that folder;
-3. Open up a command line in that folder, and execure `gradlew setupDecompWorkspace`. Once its done, run IDE-specific command to generate project for your IDE; either `gradlew eclipse` or `gradlew idea`;
-4. In case you use Eclipse, don't forget that you need to open your workspace by choosing `eclipse` folder within your mod-specific folder as workspace location. In case you use Idea... I dunno, you know better what to do;
-5. Use `gradlew build` whenever you need to build a `.jar` with your mod. It will end up being in `build/libs` directory within your mod-specific workspace folder.
+### Клиент
+1. Установите Forge 1.12.2.
+2. Поместите собранный jar в `.minecraft/mods`.
+3. Запустите игру.
 
-**Important note on repository setup:** Setup on this repository contains `eclipse` and `.settings` folders, which are important for setting up an Eclipse project, but you generally shouldn't commit them when you set up a repository for actual mod. For that purpose, it is unrecommended to use this repository as actual template via GitHub; you should instead copy its contents manually, so that `.gitignore` takes effect and doesn't let you commit these alongside all other stuff. Alternatively, after creating a repository using this one as template you should make a commit that removes these folders. Once pushed - put them back, thanks to `.gitignore` they won't be recognized any longer.
+### Выделенный сервер
+1. Установите Forge 1.12.2 server.
+2. Поместите тот же jar в `mods` на сервере.
+3. Запустите сервер, затем настройте `config/templatelucraftmod.cfg`.
+
+## Управление
+
+- `G` — переключение режима ползания.
+
+Клиент только отправляет запрос на переключение. Сервер авторитетно проверяет допустимость поверхности и синхронизирует состояние.
+
+## Конфигурация
+
+Файл: `config/templatelucraftmod.cfg`, категория `crawl`:
+
+- `allowWallCrawl` — разрешить стены.
+- `allowCeilingCrawl` — разрешить потолки.
+- `crawlSpeed` — множитель скорости ползания.
+- `maxClimbHeight` — авто-взбирание (0..1 блок).
+- `blockedBlocks` — список registry name блоков, по которым ползать нельзя.
+
+По умолчанию запрещены воздух/жидкости, также сервер дополнительно отбрасывает поверхности без collision box и не-solid стороны.
+
+## Что реализовано
+
+- Capability-состояние игрока (ползание, поверхность, поза, переход).
+- Сохранение и перенос состояния через `PlayerEvent.Clone`.
+- Синхронизация состояния при входе, смене измерения, возрождении и начале отслеживания игрока.
+- C2S-пакет переключения ползания (клавиша G) и серверная валидация.
+- Server-side контроллер движения/поверхностей:
+  - земля / стены / потолок;
+  - переходы между поверхностями;
+  - авто-взбирание до 1 блока и безопасное опускание;
+  - базовые collision-проверки и защита от некорректных клиентских запросов.
+- Клиентская визуализация:
+  - позы `STANDING`, `LOWERING`, `CRAWLING`, `CLIMBING`, `TRANSITION`, `RAISING`;
+  - интерполяция ориентации по `partialTicks`;
+  - камера/визуальный roll для стен/потолков.
+
+## Известные ограничения (Forge 1.12.2 без ASM/Coremod)
+
+- Vanilla hitbox игрока нельзя полноценно вращать как физическое тело по стенам/потолку без глубокого патчинга.
+- Реализован безопасный MVP: серверная проверка поверхности, ограниченная коррекция движения и коллизий, а также визуальная ориентация клиента.
+- Из-за ограничений vanilla-сети `yaw/pitch` серверная боевая/сетeвая логика остаётся в стандартной системе координат.
