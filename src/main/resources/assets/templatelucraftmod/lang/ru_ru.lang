@@ -1,0 +1,9 @@
+key.categories.templatelucraftmod=Template LC Mod
+key.templatelucraftmod.toggle_crawl=Переключить ползание
+crawlmod.message.enabled=Ползание включено
+crawlmod.message.disabled=Ползание выключено
+crawlmod.message.cannot_enable=Рядом нет подходящей поверхности для ползания
+crawlmod.message.cannot_disable=Недостаточно места, чтобы встать
+crawlmod.config.allowWallCrawl=Разрешить ползание по стенам
+crawlmod.config.allowCeilingCrawl=Разрешить ползание по потолку
+crawlmod.config.blockedBlocks=Запрещённые блоки для ползания
